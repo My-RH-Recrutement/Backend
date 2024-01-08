@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "recruiters")
 public class Recruiter extends User {
-    private String password;
     private String Address;
     private String image;
     private boolean isVerified;

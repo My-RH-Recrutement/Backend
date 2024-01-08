@@ -10,8 +10,10 @@ import java.util.UUID;
 public class UserRequest {
     private UUID id;
     private String fullName;
-//    @NotNull(message = "email cannot be null")
-//    @Email(message = "Please Enter a valid Email")
+    @NotNull(message = "email cannot be null")
+    @Email(message = "Please Enter a valid Email")
     private String email;
+    @NotNull(message = "password cannot be null")
+    private String password;
     private String phoneNumber;
 }
