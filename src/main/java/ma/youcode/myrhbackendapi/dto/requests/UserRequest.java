@@ -1,5 +1,6 @@
 package ma.youcode.myrhbackendapi.dto.requests;
 
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -16,4 +17,6 @@ public class UserRequest {
     @NotNull(message = "password cannot be null")
     private String password;
     private String phoneNumber;
+    private String role;
+    private boolean isVerified = false;
 }

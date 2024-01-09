@@ -11,8 +11,6 @@ import java.io.Serializable;
 @Data
 @RequiredArgsConstructor
 public class RecruiterRequest extends UserRequest implements Serializable {
-    private String password;
-
     private String address;
 
     private boolean isVerified = false;

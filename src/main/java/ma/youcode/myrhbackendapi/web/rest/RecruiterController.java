@@ -24,7 +24,6 @@ import java.util.*;
 public class RecruiterController implements ControllerInterface<RecruiterRequest, RecruiterResponse, UUID> {
 
     private final RecruiterService recruiterService;
-    private final VerificationCodeService verificationCodeService;
 
     @Override
     @GetMapping("/{id}")
@@ -69,12 +68,5 @@ public class RecruiterController implements ControllerInterface<RecruiterRequest
         if (recruiterService.destroy(id)) messages.put("message", "Recruiter Deleted Successfully");
         else messages.put("message", "Recruiter couldn't be deleted");
         return new ResponseEntity<>(messages, HttpStatus.OK);
-    }
-
-    @PostMapping("/verify-account")
-    public ResponseEntity<RecruiterResponse> verifyAccount(@Valid @RequestBody VerificationCodeRequest request) {
-        Optional<RecruiterResponse> recruiterResponse = recruiterService.verifyAccount(request);
-        assert recruiterResponse.isPresent();
-        return new ResponseEntity<>(recruiterResponse.get(), HttpStatus.OK);
     }
 }

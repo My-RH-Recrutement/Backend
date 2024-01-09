@@ -3,13 +3,17 @@ package ma.youcode.myrhbackendapi.services.implementations;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.requests.RegisterRequest;
 import ma.youcode.myrhbackendapi.dto.requests.UserRequest;
+import ma.youcode.myrhbackendapi.dto.requests.VerificationCodeRequest;
 import ma.youcode.myrhbackendapi.dto.responses.AuthResponse;
+import ma.youcode.myrhbackendapi.dto.responses.UserResponse;
 import ma.youcode.myrhbackendapi.entities.User;
+import ma.youcode.myrhbackendapi.entities.VerificationCode;
 import ma.youcode.myrhbackendapi.exceptions.ResourceAlreadyExistException;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
 import ma.youcode.myrhbackendapi.repositories.UserRepository;
 import ma.youcode.myrhbackendapi.security.jwt.JwtService;
 import ma.youcode.myrhbackendapi.services.AuthService;
+import ma.youcode.myrhbackendapi.services.VerificationCodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationCodeService verificationCodeService;
 
     /**
      *
@@ -61,7 +66,6 @@ public class AuthServiceImpl implements AuthService {
     public Optional<AuthResponse> register(RegisterRequest userRequest) {
         Optional<User> user = userRepository.findUserByEmail(userRequest.getEmail());
         if (user.isPresent()) throw new ResourceAlreadyExistException("User already exist with this email: " + userRequest.getEmail());
-//        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User userToSave = mapper.map(userRequest, User.class);
         userToSave.setPassword(passwordEncoder.encode(userToSave.getPassword()));
         User savedUser = userRepository.save(userToSave);
@@ -82,5 +86,16 @@ public class AuthServiceImpl implements AuthService {
         }catch (BadCredentialsException exception) {
             throw new BadCredentialsException("Invalid Credentials!, please check your email or password: " + exception.getMessage());
         }
+    }
+
+    @Override
+    public Optional<UserResponse> verifyAccount(VerificationCodeRequest request) {
+        Optional<VerificationCode> code = verificationCodeService.verifyCode(request.getCode());
+        assert code.isPresent();
+        User user = userRepository.findById(code.get().getRecruiter().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("No Recruiter found with id: " + code.get().getRecruiter().getId()));
+        user.setVerified(true);
+        userRepository.save(user);
+        return Optional.of(mapper.map(user, UserResponse.class));
     }
 }

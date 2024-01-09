@@ -101,15 +101,4 @@ public class RecruiterServiceImpl implements RecruiterService {
         return recruiterRepository.findRecruiterByEmail(email)
                 .orElse(null);
     }
-
-    @Override
-    public Optional<RecruiterResponse> verifyAccount(VerificationCodeRequest request) {
-        Optional<VerificationCode> code = verificationCodeService.verifyCode(request.getCode());
-        assert code.isPresent();
-        Recruiter recruiter = recruiterRepository.findById(code.get().getRecruiter().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("No Recruiter found with id: " + code.get().getRecruiter().getId()));
-        recruiter.setVerified(true);
-        recruiterRepository.save(recruiter);
-        return Optional.of(mapper.map(recruiter, RecruiterResponse.class));
-    }
 }

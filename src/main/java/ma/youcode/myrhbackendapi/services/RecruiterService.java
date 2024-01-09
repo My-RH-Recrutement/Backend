@@ -12,5 +12,4 @@ import java.util.UUID;
 
 public interface RecruiterService extends CrudInterface<RecruiterResponse, RecruiterRequest, UUID> {
     public Recruiter findRecruiterByEmail(String email);
-    public Optional<RecruiterResponse> verifyAccount(VerificationCodeRequest request);
 }

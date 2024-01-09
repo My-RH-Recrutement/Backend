@@ -32,6 +32,7 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private Access role;
+    private boolean isVerified;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

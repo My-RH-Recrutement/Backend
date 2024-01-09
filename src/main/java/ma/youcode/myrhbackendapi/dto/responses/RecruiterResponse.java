@@ -10,13 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecruiterResponse extends UserResponse {
-    private String password;
-
     private String address;
-
-    private boolean isVerified;
-
     private String image;
-
 //    private List<JobOffer> jobOffers;
 }

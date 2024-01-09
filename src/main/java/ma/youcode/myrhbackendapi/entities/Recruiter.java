@@ -14,7 +14,6 @@ import java.util.List;
 public class Recruiter extends User {
     private String Address;
     private String image;
-    private boolean isVerified;
 
     @OneToMany(mappedBy = "recruiter", fetch = FetchType.LAZY)
     private List<JobOffer> jobOffers;
