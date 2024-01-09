@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.AbstractRequestMatcherRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,6 +31,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.List;
 
+/**
+ * spring security configuration class
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -38,8 +42,8 @@ public class SecurityConfig {
     private final UserService userService;
 
     /**
-     *
-     * @return
+     * Creates a new {@link BCryptPasswordEncoder} instance as a password encoder
+     * @return new {@link BCryptPasswordEncoder} instance
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,17 +51,19 @@ public class SecurityConfig {
     }
 
     /**
+     * Configures security settings for the application, including authentication, authorization, and JWT handling.
      *
-     * @param http
-     * @return
-     * @throws Exception
+     * @param http HttpSecurity object to configure security settings
+     * @return SecurityFilterChain object representing the configured security filter chain
+     * @throws Exception if an error occurs during the configuration process
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorizedRequests) -> authorizedRequests.requestMatchers("/api/v1/auth/authenticate")
+                .securityMatchers(AbstractRequestMatcherRegistry::anyRequest)
+                .authorizeHttpRequests((authorizedRequests) -> authorizedRequests.requestMatchers("/api/v1/auth/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
@@ -69,8 +75,8 @@ public class SecurityConfig {
     }
 
     /**
-     *
-     * @return
+     * Creates a new {@link JwtEncoder} instance as the jwt token encoder
+     * @return new {@link NimbusJwtEncoder} instance
      */
     @Bean
     public JwtEncoder jwtEncoder() {
@@ -78,8 +84,8 @@ public class SecurityConfig {
     }
 
     /**
-     *
-     * @return
+     *  Creats a new {@link JwtDecoder} instance as the jwt token decoder
+     * @return new {@link NimbusJwtDecoder} instance
      */
     @Bean
     public JwtDecoder jwtDecoder() {
@@ -88,8 +94,9 @@ public class SecurityConfig {
     }
 
     /**
+     * Configures and provides a custom AuthenticationProvider using DaoAuthenticationProvider.
      *
-     * @return
+     * @return new {@link AuthenticationProvider} instance
      */
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -100,9 +107,10 @@ public class SecurityConfig {
     }
 
     /**
+     * Retrieves the AuthenticationManager from the provided AuthenticationConfiguration.
      *
-     * @param configuration
-     * @return
+     * @param configuration AuthenticationConfiguration
+     * @return AuthenticationManager
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
@@ -114,8 +122,8 @@ public class SecurityConfig {
     }
 
     /**
-     *
-     * @return
+     *  creates custom {@link CorsConfigurationSource} configurations for cors
+     * @return {@link CorsConfigurationSource}
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
