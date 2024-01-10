@@ -12,6 +12,7 @@ import ma.youcode.myrhbackendapi.services.VerificationCodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,9 +26,9 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
 
     @Override
     public Optional<VerificationCodeResponse> generateCode(String email) {
-        String sub = email.substring(0, 4) + UUID.randomUUID();
+        String sub = email.substring(0, 4) + UUID.randomUUID().toString().replace("-", "");
         VerificationCodeResponse response = VerificationCodeResponse.builder()
-                .code(sub.substring(0, 20))
+                .code(sub.substring(0, 10))
                 .expiration(LocalDateTime.now().plusMinutes(3))
                 .build();
         return Optional.of(response);
