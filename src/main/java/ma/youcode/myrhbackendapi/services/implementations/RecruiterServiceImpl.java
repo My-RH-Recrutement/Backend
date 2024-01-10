@@ -2,18 +2,13 @@ package ma.youcode.myrhbackendapi.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.requests.RecruiterRequest;
-import ma.youcode.myrhbackendapi.dto.requests.VerificationCodeRequest;
 import ma.youcode.myrhbackendapi.dto.responses.RecruiterResponse;
-import ma.youcode.myrhbackendapi.dto.responses.VerificationCodeResponse;
 import ma.youcode.myrhbackendapi.entities.Recruiter;
-import ma.youcode.myrhbackendapi.entities.VerificationCode;
-import ma.youcode.myrhbackendapi.exceptions.ResourceAlreadyExistException;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
+import ma.youcode.myrhbackendapi.exceptions.SomethingWentWrongException;
 import ma.youcode.myrhbackendapi.repositories.RecruiterRepository;
 import ma.youcode.myrhbackendapi.services.CloudinaryService;
-import ma.youcode.myrhbackendapi.services.EmailService;
 import ma.youcode.myrhbackendapi.services.RecruiterService;
-import ma.youcode.myrhbackendapi.services.VerificationCodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +25,6 @@ public class RecruiterServiceImpl implements RecruiterService {
 
     private final RecruiterRepository recruiterRepository;
     private final CloudinaryService cloudinaryService;
-    private final VerificationCodeService verificationCodeService;
-    private final EmailService emailService;
     private final ModelMapper mapper;
 
     @Override
@@ -59,22 +53,17 @@ public class RecruiterServiceImpl implements RecruiterService {
 
     @Override
     public Optional<RecruiterResponse> create(RecruiterRequest recruiterRequest) {
-        Optional<Recruiter> isRecruiterExist = recruiterRepository.findRecruiterByEmail(recruiterRequest.getEmail());
-        if (isRecruiterExist.isPresent()) throw new ResourceAlreadyExistException("Recruiter already exist with this Email");
-        // upload image to cloudinary
-        String imageUrl = cloudinaryService.uploadFile(recruiterRequest.getImage());
-        // create recruiter
-        Recruiter recruiter = mapper.map(recruiterRequest, Recruiter.class);
-        recruiter.setImage(imageUrl);
-        Recruiter savedRecruiter = recruiterRepository.save(recruiter);
-        // generate verification code and store it
-        Optional<VerificationCodeResponse> code = verificationCodeService.generateCode(savedRecruiter.getEmail());
-        assert code.isPresent();
-        VerificationCodeResponse verificationCode = verificationCodeService.save(savedRecruiter, code.get())
-                .orElseThrow(() -> new RuntimeException("Something went wrong"));
-        // send verification code via email
-        emailService.send(savedRecruiter.getEmail(), "MyRH account Verification Code", "Here is Your Verification code: `" + verificationCode.getCode() + "` it will last only for 3 minutes.");
-        return Optional.of(mapper.map(savedRecruiter, RecruiterResponse.class));
+        try {
+            // upload image to cloudinary
+            CompletableFuture<String> futureImageUrl = CompletableFuture.supplyAsync(() -> cloudinaryService.uploadFile(recruiterRequest.getImage()));
+            // create recruiter
+            Recruiter recruiter = mapper.map(recruiterRequest, Recruiter.class);
+            recruiter.setImage(futureImageUrl.get());
+            Recruiter savedRecruiter = recruiterRepository.save(recruiter);
+            return Optional.of(mapper.map(savedRecruiter, RecruiterResponse.class));
+        }catch (Exception e) {
+            throw new SomethingWentWrongException("Something went wrong while uploading image to cloudinary");
+        }
     }
 
     @Override

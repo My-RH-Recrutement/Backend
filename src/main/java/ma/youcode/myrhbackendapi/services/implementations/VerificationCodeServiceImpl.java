@@ -2,7 +2,7 @@ package ma.youcode.myrhbackendapi.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.responses.VerificationCodeResponse;
-import ma.youcode.myrhbackendapi.entities.Recruiter;
+import ma.youcode.myrhbackendapi.entities.User;
 import ma.youcode.myrhbackendapi.entities.VerificationCode;
 import ma.youcode.myrhbackendapi.exceptions.InvalidVerificationCodeException;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
@@ -43,9 +43,9 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public Optional<VerificationCodeResponse> save(Recruiter recruiter, VerificationCodeResponse code) {
+    public Optional<VerificationCodeResponse> save(User user, VerificationCodeResponse code) {
         VerificationCode verificationCode = mapper.map(code, VerificationCode.class);
-        verificationCode.setRecruiter(recruiter);
+        verificationCode.setUser(user);
         VerificationCode savedVerificationCode = verificationCodeRepository.save(verificationCode);
         return Optional.of(mapper.map(savedVerificationCode, VerificationCodeResponse.class));
     }

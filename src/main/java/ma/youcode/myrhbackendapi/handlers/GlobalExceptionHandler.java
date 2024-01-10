@@ -1,9 +1,6 @@
 package ma.youcode.myrhbackendapi.handlers;
 
-import ma.youcode.myrhbackendapi.exceptions.InvalidVerificationCodeException;
-import ma.youcode.myrhbackendapi.exceptions.ResourceAlreadyExistException;
-import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
-import ma.youcode.myrhbackendapi.exceptions.TokenExpirationException;
+import ma.youcode.myrhbackendapi.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -90,5 +87,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception) {
         ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles SomethingWentWrongException exception when something unexpected happened
+     * @param exception {@link SomethingWentWrongException}
+     * @return {@link ErrorResponse} custom error response contains all details about the exception
+     */
+    @ExceptionHandler(SomethingWentWrongException.class)
+    public ResponseEntity<ErrorResponse> handleSomethingWentWrongException(SomethingWentWrongException exception) {
+        ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.CONFLICT, exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }

@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @ModelAttribute RegisterRequest request) {
         Optional<AuthResponse> response = authService.register(request);
         assert response.isPresent();
         return new ResponseEntity<>(response.get(), HttpStatus.CREATED);

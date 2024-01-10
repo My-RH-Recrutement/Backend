@@ -16,5 +16,5 @@ public class VerificationCode {
     private LocalDateTime expiration;
 
     @OneToOne
-    private Recruiter recruiter;
+    private User user;
 }

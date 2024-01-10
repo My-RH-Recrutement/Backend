@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +43,7 @@ public class JwtService {
                 .issuedAt(instant)
                 .expiresAt(instant.plus(5, ChronoUnit.MINUTES))
                 .subject(userDetails.getUsername())
-                .claim("scope", extractClaims(authentication))
+                .claim("SCOPE", extractClaims(authentication))
                 .build();
         JwtEncoderParameters jwtParameters = JwtEncoderParameters.from(
                 JwsHeader.with(MacAlgorithm.HS512).build(),

@@ -3,6 +3,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -20,6 +21,8 @@ public class RegisterRequest {
     @Size(min = 8, max = 50, message = "password must be min 8 to 50 max characters")
     private String password;
     private String phoneNumber;
+    private String address;
+    private MultipartFile image;
     @NotNull(message = "role cannot be null")
     private String role;
 }
