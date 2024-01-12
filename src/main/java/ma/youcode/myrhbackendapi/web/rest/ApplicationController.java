@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.requests.ApplicationRequest;
 import ma.youcode.myrhbackendapi.dto.responses.ApplicationResponse;
+import ma.youcode.myrhbackendapi.enums.StatusPostulation;
 import ma.youcode.myrhbackendapi.interfaces.ControllerInterface;
 import ma.youcode.myrhbackendapi.services.ApplicationService;
 import org.springframework.data.domain.Page;
@@ -65,5 +66,15 @@ public class ApplicationController implements ControllerInterface<ApplicationReq
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Map<String, String>> destroy(@PathVariable UUID id) {
         return null;
+    }
+
+    @GetMapping("/PostulationByIdJobSeeker/{idJobSeeker}")
+    public ResponseEntity<List<ApplicationResponse>> getPostulationByIdJobSeeker(@PathVariable UUID idJobSeeker) {
+        return new ResponseEntity<>(applicationService.getPostulationByIdJobSeeker(idJobSeeker), HttpStatus.OK);
+    }
+
+    @GetMapping("/PostulationByIdJobSeeker/{idJobSeeker}/{statusPostulation}")
+    public ResponseEntity<List<ApplicationResponse>> getPostulationByIdJobSeekerAndStatusPostulation(@PathVariable UUID idJobSeeker, @PathVariable StatusPostulation statusPostulation) {
+        return new ResponseEntity<>(applicationService.getPostulationByIdJobSeekerAndStatusPostulation(idJobSeeker,statusPostulation), HttpStatus.OK);
     }
 }

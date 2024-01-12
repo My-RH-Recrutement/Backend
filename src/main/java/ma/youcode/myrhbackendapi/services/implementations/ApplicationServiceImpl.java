@@ -7,6 +7,7 @@ import ma.youcode.myrhbackendapi.entities.Application;
 import ma.youcode.myrhbackendapi.entities.JobOffer;
 import ma.youcode.myrhbackendapi.entities.JobSeeker;
 import ma.youcode.myrhbackendapi.entities.embeddable.SeekerOfferId;
+import ma.youcode.myrhbackendapi.enums.StatusPostulation;
 import ma.youcode.myrhbackendapi.exceptions.ResourceAlreadyExistException;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
 import ma.youcode.myrhbackendapi.repositories.ApplicationRepository;
@@ -22,8 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +69,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         jobSeeker.get().setResume(resumeUrl);
         jobSeeker = Optional.of(jobSeekerRepository.save(jobSeeker.get()));
         // TODO: insert new Application
-        Application application = new Application(seekerOfferId, applicationRequest.getMotivationLetter(), jobSeeker.get(), jobOffer);
+        Application application = new Application(seekerOfferId, applicationRequest.getMotivationLetter(),applicationRequest.getStatusPostulation(), jobSeeker.get(), jobOffer);
         Application savedApplication = applicationRepository.save(application);
         return Optional.of(mapper.map(savedApplication, ApplicationResponse.class));
     }
@@ -82,5 +82,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public boolean destroy(SeekerOfferId seekerOfferId) {
         return false;
+    }
+
+    @Override
+    public List<ApplicationResponse> getPostulationByIdJobSeeker(UUID idJobSeeker) {
+        List<Application> applications = applicationRepository.findAllByJobSeekerId(idJobSeeker);
+        return applications.stream()
+                .map(Application -> mapper.map(Application, ApplicationResponse.class))
+                .toList();
+    }
+
+    @Override
+    public List<ApplicationResponse> getPostulationByIdJobSeekerAndStatusPostulation(UUID idJobSeeker, StatusPostulation statusPostulation) {
+        List<Application> applications = applicationRepository.getPostulationByIdJobSeekerIdAndStatusPostulation(idJobSeeker,statusPostulation);
+        return applications.stream()
+                .map(Application -> mapper.map(Application, ApplicationResponse.class))
+                .toList();
     }
 }

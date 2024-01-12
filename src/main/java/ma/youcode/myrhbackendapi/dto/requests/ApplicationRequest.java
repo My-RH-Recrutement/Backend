@@ -1,9 +1,10 @@
 package ma.youcode.myrhbackendapi.dto.requests;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
-import ma.youcode.myrhbackendapi.entities.JobOffer;
-import ma.youcode.myrhbackendapi.entities.JobSeeker;
 import ma.youcode.myrhbackendapi.entities.embeddable.SeekerOfferId;
+import ma.youcode.myrhbackendapi.enums.StatusPostulation;
 
 @Data
 public class ApplicationRequest {
@@ -14,4 +15,7 @@ public class ApplicationRequest {
     private JobSeekerRequest jobSeeker;
 
     private JobOfferRequest jobOffer;
+
+    @Enumerated(EnumType.STRING)
+    private StatusPostulation statusPostulation;
 }

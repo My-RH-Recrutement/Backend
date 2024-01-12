@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.youcode.myrhbackendapi.entities.embeddable.SeekerOfferId;
-
-import java.util.UUID;
+import ma.youcode.myrhbackendapi.enums.StatusPostulation;
 
 @Entity
 @Data
@@ -20,6 +19,11 @@ public class Application {
 
     @Column(name = "motivationletter")
     private String motivationLetter;
+
+    @Column(name = "statusPostulation")
+    @Enumerated(EnumType.STRING)
+    private StatusPostulation statusPostulation;
+
 
     @ManyToOne
     @MapsId("jobSeekerId")
