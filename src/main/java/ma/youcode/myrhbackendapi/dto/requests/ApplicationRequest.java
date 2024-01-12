@@ -16,6 +16,8 @@ public class ApplicationRequest {
 
     private JobOfferRequest jobOffer;
 
+    private boolean isOnline;
+
     @Enumerated(EnumType.STRING)
     private StatusPostulation statusPostulation;
 }

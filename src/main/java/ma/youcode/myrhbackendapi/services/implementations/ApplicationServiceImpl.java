@@ -69,7 +69,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         jobSeeker.get().setResume(resumeUrl);
         jobSeeker = Optional.of(jobSeekerRepository.save(jobSeeker.get()));
         // TODO: insert new Application
-        Application application = new Application(seekerOfferId, applicationRequest.getMotivationLetter(),applicationRequest.getStatusPostulation(), jobSeeker.get(), jobOffer);
+        Application application = new Application(seekerOfferId, applicationRequest.isOnline(),applicationRequest.getMotivationLetter(),applicationRequest.getStatusPostulation(), jobSeeker.get(), jobOffer);
         Application savedApplication = applicationRepository.save(application);
         return Optional.of(mapper.map(savedApplication, ApplicationResponse.class));
     }

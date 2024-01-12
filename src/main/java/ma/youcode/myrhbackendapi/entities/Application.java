@@ -17,13 +17,16 @@ public class Application {
     @EmbeddedId
     private SeekerOfferId id;
 
+    @Column(name = "is0nline")
+    private boolean isOnline;
+    /*true == Online && false == Offline*/
+
     @Column(name = "motivationletter")
     private String motivationLetter;
 
     @Column(name = "statusPostulation")
     @Enumerated(EnumType.STRING)
     private StatusPostulation statusPostulation;
-
 
     @ManyToOne
     @MapsId("jobSeekerId")

@@ -22,6 +22,8 @@ public class ApplicationResponse {
 
     private JobOfferResponse jobOffer;
 
+    private boolean isOnline;
+
     @Enumerated(EnumType.STRING)
     private StatusPostulation statusPostulation;
 }
