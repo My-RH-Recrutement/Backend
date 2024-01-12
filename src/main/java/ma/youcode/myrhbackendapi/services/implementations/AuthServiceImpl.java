@@ -58,8 +58,6 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = authenticateUser(userRequest.getEmail(), userRequest.getPassword());
         User user  = userRepository.findUserByEmail(userRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("No User found with Email:" + userRequest.getEmail()));
-        String verificationCode = generateAndSaveVerificationCode(user);
-        sendVerificationCodeViaEmail(user.getEmail(), verificationCode);
         String jwt = jwtService.generateToken(authentication, user);
         return Optional.of(
                 AuthResponse.builder()

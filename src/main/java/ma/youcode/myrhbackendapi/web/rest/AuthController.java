@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthResponse> authentication(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<AuthResponse> authentication(@Valid @ModelAttribute UserRequest request) {
         Optional<AuthResponse> response = authService.login(request);
         assert response.isPresent();
         return new ResponseEntity<>(response.get(), HttpStatus.OK);
