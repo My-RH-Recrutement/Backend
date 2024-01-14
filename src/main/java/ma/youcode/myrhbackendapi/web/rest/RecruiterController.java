@@ -20,7 +20,6 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/recruiters")
-@CrossOrigin("*") // TODO: replace "*" with frontend host only
 public class RecruiterController implements ControllerInterface<RecruiterRequest, RecruiterResponse, UUID> {
 
     private final RecruiterService recruiterService;

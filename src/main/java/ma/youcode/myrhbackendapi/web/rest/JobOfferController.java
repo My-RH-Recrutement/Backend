@@ -17,7 +17,6 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/joboffers")
-@CrossOrigin("*") // TODO: replace "*" with frontend host only
 public class JobOfferController implements ControllerInterface<JobOfferRequest, JobOfferResponse, UUID> {
 
     private final JobOfferService jobOfferService;

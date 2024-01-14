@@ -2,6 +2,7 @@ package ma.youcode.myrhbackendapi.security.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import lombok.RequiredArgsConstructor;
+import ma.youcode.myrhbackendapi.enums.Access;
 import ma.youcode.myrhbackendapi.services.UserService;
 import ma.youcode.myrhbackendapi.utils.Env;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +25,13 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,6 +43,12 @@ import java.util.List;
 public class SecurityConfig {
 
     private final UserService userService;
+
+
+    private final static String[] GLOBAL_WHITE_LIST = {
+            "api/v1/auth/**",
+            "api/v1/joboffers"
+    };
 
     /**
      * Creates a new {@link BCryptPasswordEncoder} instance as a password encoder
@@ -61,9 +70,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 .securityMatchers(AbstractRequestMatcherRegistry::anyRequest)
-                .authorizeHttpRequests((authorizedRequests) -> authorizedRequests.requestMatchers("/api/v1/auth/**")
+                .authorizeHttpRequests((authorizedRequests) -> authorizedRequests
+                        .requestMatchers(GLOBAL_WHITE_LIST)
                         .permitAll()
                         .anyRequest()
                         .authenticated())

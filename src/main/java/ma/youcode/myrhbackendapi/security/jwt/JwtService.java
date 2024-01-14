@@ -41,7 +41,7 @@ public class JwtService {
         Instant instant = Instant.now();
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
-                .expiresAt(instant.plus(5, ChronoUnit.MINUTES))
+                .expiresAt(instant.plus(24, ChronoUnit.HOURS))
                 .subject(userDetails.getUsername())
                 .claim("SCOPE", extractClaims(authentication))
                 .build();
