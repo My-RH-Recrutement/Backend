@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,15 +13,20 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "verification_codes")
-public class VerificationCode {
+@Table(name = "packs")
+public class Pack {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String code;
-    private LocalDateTime expiration;
-    @OneToOne
-    private User user;
+    private String name;
+    private String description;
+    private double price;
+    private Integer numberOfOffers;
+    private boolean isUnlimited;
+
+    @OneToMany(mappedBy = "pack", fetch = FetchType.LAZY)
+    private List<Subscription> subscriptions;
+
     @CreatedDate
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();

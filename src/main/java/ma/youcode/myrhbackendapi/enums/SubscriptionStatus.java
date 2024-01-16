@@ -3,14 +3,13 @@ package ma.youcode.myrhbackendapi.enums;
 import lombok.Getter;
 
 @Getter
-public enum OfferStatus {
-    ACCEPTED("accepted"),
-    REFUSED("refused"),
-    PENDING("pending");
+public enum SubscriptionStatus {
+    ACTIVE("active"),
+    IN_ACTIVE("inactive");
 
     private final String status;
 
-    OfferStatus(String status) {
+    SubscriptionStatus(String status) {
         this.status = status;
     }
 }
