@@ -23,6 +23,7 @@ public class Pack {
     private double price;
     private Integer numberOfOffers;
     private boolean isUnlimited;
+    private boolean isRecommended;
 
     @OneToMany(mappedBy = "pack", fetch = FetchType.LAZY)
     private List<Subscription> subscriptions;

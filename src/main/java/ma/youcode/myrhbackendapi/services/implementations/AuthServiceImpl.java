@@ -22,6 +22,7 @@ import ma.youcode.myrhbackendapi.services.AuthService;
 import ma.youcode.myrhbackendapi.services.EmailService;
 import ma.youcode.myrhbackendapi.services.RecruiterService;
 import ma.youcode.myrhbackendapi.services.VerificationCodeService;
+import ma.youcode.myrhbackendapi.utils.Utils;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -73,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Optional<AuthResponse> register(RegisterRequest userRequest) {
-        Optional<User> user = userRepository.findUserByEmail(userRequest.getEmail());
+        Optional<User> user = userRepository.findUserByEmail(Utils.normalizeEmail(userRequest.getEmail()));
         if (user.isPresent()) throw new ResourceAlreadyExistException("User already exist with this email: " + userRequest.getEmail());
 
         String password = userRequest.getPassword();

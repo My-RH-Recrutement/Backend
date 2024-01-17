@@ -19,7 +19,7 @@ public class VerificationCode {
     private UUID id;
     private String code;
     private LocalDateTime expiration;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @CreatedDate
     private LocalDateTime createdAt = LocalDateTime.now();
