@@ -17,7 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     /**
-     *
+     * Handles validation exception occurred by the request DTOs when posting data using a form
      * @param exception - {@link MethodArgumentNotValidException}
      * @return HashMap with all the validation errors
      */
@@ -98,5 +98,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleSomethingWentWrongException(SomethingWentWrongException exception) {
         ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.CONFLICT, exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handles Stripe Exception when processing payments
+     * @param exception {@link CustomStripeException}
+     * @return {@link ErrorResponse} custom error response contains all details about the exception
+     */
+    @ExceptionHandler(CustomStripeException.class)
+    public ResponseEntity<ErrorResponse> handleCustomStripeException(CustomStripeException exception) {
+        ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.EXPECTATION_FAILED, exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

@@ -20,8 +20,7 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private double amount;
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
     private SubscriptionStatus subscriptionStatus;
     private String cancellationReason;
 

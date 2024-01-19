@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.requests.PackRequest;
 import ma.youcode.myrhbackendapi.dto.responses.PackResponse;
 import ma.youcode.myrhbackendapi.entities.Pack;
+import ma.youcode.myrhbackendapi.exceptions.ResourceAlreadyExistException;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
 import ma.youcode.myrhbackendapi.repositories.PackRepository;
 import ma.youcode.myrhbackendapi.services.PackService;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +47,11 @@ public class PackServiceImpl implements PackService {
 
     @Override
     public Optional<PackResponse> create(PackRequest packRequest) {
-        return Optional.empty();
+        Pack existPack = packRepository.findByNameAndPrice(packRequest.getName(), packRequest.getPrice())
+                .orElseThrow(() -> new ResourceAlreadyExistException("Pack Already exist with this Info"));
+        Pack pack = mapper.map(packRequest, Pack.class);
+        Pack savedPack = packRepository.save(pack);
+        return Optional.of(mapper.map(savedPack, PackResponse.class));
     }
 
     @Override
