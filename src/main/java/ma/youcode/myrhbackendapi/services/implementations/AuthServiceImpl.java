@@ -62,6 +62,9 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jwtService.generateToken(authentication, user);
         return Optional.of(
                 AuthResponse.builder()
+                        .username(user.getFullName())
+                        .email(user.getUsername())
+                        .role(user.getRole().toString())
                         .token(jwt)
                         .build()
         );
@@ -92,6 +95,9 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jwtService.generateToken(authentication, userToSave);
         return Optional.of(
                 AuthResponse.builder()
+                        .username(userToSave.getFullName())
+                        .email(userToSave.getUsername())
+                        .role(userToSave.getRole().toString())
                         .token(jwt)
                         .build()
         );
