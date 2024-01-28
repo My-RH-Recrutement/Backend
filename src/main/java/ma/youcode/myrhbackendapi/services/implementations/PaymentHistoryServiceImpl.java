@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.requests.PaymentHistoryRequest;
 import ma.youcode.myrhbackendapi.dto.responses.PaymentHistoryResponse;
 import ma.youcode.myrhbackendapi.entities.PaymentHistory;
+import ma.youcode.myrhbackendapi.entities.Subscription;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
 import ma.youcode.myrhbackendapi.repositories.PaymentHistoryRepository;
+import ma.youcode.myrhbackendapi.repositories.SubscriptionRepository;
 import ma.youcode.myrhbackendapi.services.PaymentHistoryService;
 import ma.youcode.myrhbackendapi.utils.Utils;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
     private final PaymentHistoryRepository paymentHistoryRepository;
+    private final SubscriptionRepository subscriptionRepository;
     private final ModelMapper mapper;
 
     @Override
@@ -46,7 +49,10 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
     @Override
     public Optional<PaymentHistoryResponse> create(PaymentHistoryRequest paymentHistoryRequest) {
+        Subscription subscription = subscriptionRepository.findById(Utils.pareseStringToUUID(paymentHistoryRequest.getSubscription()))
+                .orElseThrow(() -> new ResourceNotFoundException("No Subscription Found with ID: " + paymentHistoryRequest.getSubscription()));
         PaymentHistory paymentHistoryToSave = mapper.map(paymentHistoryRequest, PaymentHistory.class);
+        paymentHistoryToSave.setSubscription(subscription);
         PaymentHistory savedPaymentHistory = paymentHistoryRepository.save(paymentHistoryToSave);
         return Optional.of(mapper.map(savedPaymentHistory, PaymentHistoryResponse.class));
     }

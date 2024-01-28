@@ -3,13 +3,20 @@ package ma.youcode.myrhbackendapi.services.implementations;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.Customer;
+import com.stripe.model.Source;
 import com.stripe.param.ChargeCreateParams;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.PaymentSourceCollectionCreateParams;
+import com.stripe.param.SourceCreateParams;
 import jakarta.annotation.PostConstruct;
 import ma.youcode.myrhbackendapi.dto.requests.ChargeRequest;
 import ma.youcode.myrhbackendapi.exceptions.CustomStripeException;
 import ma.youcode.myrhbackendapi.services.StripeService;
 import ma.youcode.myrhbackendapi.utils.Env;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Implementation of the {@link StripeService} interface for handling payments with the Stripe API.
@@ -54,7 +61,7 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public ChargeCreateParams createChargeParams(ChargeRequest request) {
         return ChargeCreateParams.builder()
-                .setAmount(request.getAmount())
+                .setAmount(request.getAmount() * 100)
                 .setCurrency(request.getCurrency().toString())
                 .setDescription(request.getDescription())
                 .setSource(request.getToken())

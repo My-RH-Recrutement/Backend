@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ma.youcode.myrhbackendapi.enums.PaymentMethodEnum;
 import ma.youcode.myrhbackendapi.enums.PaymentStatus;
 
 import java.util.UUID;
@@ -16,7 +15,7 @@ import java.util.UUID;
 public class PaymentHistoryResponse {
     private UUID id;
     private double amount;
-    private PaymentMethodEnum paymentMethod;
+    private String paymentMethod;
     private String transaction;
     private PaymentStatus paymentStatus;
     private String description;

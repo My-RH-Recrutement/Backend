@@ -10,6 +10,6 @@ public class SubscriptionResponse {
     private String cancellationReason;
     private RecruiterResponse recruiter;
     private PackResponse pack;
-    private LocalDateTime createAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime createAt;
+    private LocalDateTime updatedAt;
 }

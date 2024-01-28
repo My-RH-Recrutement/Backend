@@ -2,7 +2,6 @@ package ma.youcode.myrhbackendapi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ma.youcode.myrhbackendapi.enums.PaymentMethodEnum;
 import ma.youcode.myrhbackendapi.enums.PaymentStatus;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -20,13 +19,13 @@ public class PaymentHistory {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private double amount;
-    @Enumerated(EnumType.STRING)
-    private PaymentMethodEnum paymentMethod;
+    private String paymentMethod;
     private String transaction;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private String currency;
     private String description;
+    private String receiptUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_id")

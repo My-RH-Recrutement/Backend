@@ -12,12 +12,14 @@ public class SubscriptionRequest {
     @NotNull(message = "Subscription Status cannot be empty")
     private String subscriptionStatus;
     private String cancellationReason;
-    @NotNull(message = "Recruiter ID cannot be empty")
-    @NotEmpty(message = "Recruiter ID is required")
+    @NotNull(message = "Recruiter email cannot be empty")
+    @NotEmpty(message = "Recruiter email is required")
     private String recruiter;
     @NotNull(message = "Pack ID cannot be null")
     @NotEmpty(message = "Pack ID is required")
     private String pack;
-    private LocalDateTime createAt = LocalDateTime.now();
+    @NotNull(message = "Charges cannot be null")
+    private ChargeRequest chargeRequest;
+    private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 }
