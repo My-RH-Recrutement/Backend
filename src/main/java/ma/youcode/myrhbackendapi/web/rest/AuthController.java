@@ -34,9 +34,10 @@ public class AuthController {
         return new ResponseEntity<>(response.get(), HttpStatus.CREATED);
     }
 
-    @PostMapping("/verify-account")
-    public ResponseEntity<UserResponse> verifyAccount(@Valid @RequestBody VerificationCodeRequest request) {
-        Optional<UserResponse> response = authService.verifyAccount(request);
+    // TODO: make this method accept a parameter
+    @PostMapping("/{id}/verify-account/{code}")
+    public ResponseEntity<UserResponse> verifyAccount(@PathVariable String id, @PathVariable String code) {
+        Optional<UserResponse> response = authService.verifyAccount(id, code);
         assert response.isPresent();
         return new ResponseEntity<>(response.get(), HttpStatus.OK);
     }

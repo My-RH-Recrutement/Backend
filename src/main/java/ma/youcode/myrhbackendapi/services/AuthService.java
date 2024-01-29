@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface AuthService {
     public Optional<AuthResponse> login(UserRequest userRequest);
     public Optional<AuthResponse> register(RegisterRequest userRequest);
-    public Optional<UserResponse> verifyAccount(VerificationCodeRequest request);
+    public Optional<UserResponse> verifyAccount(String id, String code);
 }

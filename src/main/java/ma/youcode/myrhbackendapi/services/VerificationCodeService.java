@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface VerificationCodeService {
     public Optional<VerificationCodeResponse> generateCode(String email);
-    public Optional<VerificationCode> verifyCode(String code);
+    public Optional<VerificationCode> verifyCode(User id, String code);
     public Optional<VerificationCodeResponse> save(User recruiter, VerificationCodeResponse verificationCode);
 }

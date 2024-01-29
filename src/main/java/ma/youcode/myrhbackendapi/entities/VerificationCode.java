@@ -18,6 +18,7 @@ public class VerificationCode {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String code;
+    private boolean isUsed = false;
     private LocalDateTime expiration;
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

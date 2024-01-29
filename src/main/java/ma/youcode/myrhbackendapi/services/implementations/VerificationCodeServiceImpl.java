@@ -35,11 +35,16 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public Optional<VerificationCode> verifyCode(String code) {
-        VerificationCode verificationCode = verificationCodeRepository.findVerificationCodeByCode(code)
+    public Optional<VerificationCode> verifyCode(User user, String code) {
+        VerificationCode verificationCode = verificationCodeRepository.findVerificationCodeByUserAndCode(user, code)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid Validation Code"));
+
+        if (verificationCode.isUsed()) throw new InvalidVerificationCodeException("Verification Code is Already Used");
         if (LocalDateTime.now().isBefore(verificationCode.getExpiration().minusMinutes(3))) throw new InvalidVerificationCodeException("Verification Code is Invalid");
         if (LocalDateTime.now().isAfter(verificationCode.getExpiration())) throw new TokenExpirationException("Verification Code is Expired");
+
+        verificationCode.setUsed(true);
+        verificationCodeRepository.save(verificationCode);
         return Optional.of(verificationCode);
     }
 

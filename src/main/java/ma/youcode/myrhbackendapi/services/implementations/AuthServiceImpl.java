@@ -66,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
                         .email(user.getUsername())
                         .role(user.getRole().toString())
                         .token(jwt)
+                        .verified(user.isVerified())
                         .build()
         );
     }
@@ -89,7 +90,8 @@ public class AuthServiceImpl implements AuthService {
         else userToSave = userRepository.save(userToSave);
 
         String verificationCode = generateAndSaveVerificationCode(userToSave);
-        sendVerificationCodeViaEmail(userToSave.getEmail(), verificationCode);
+        String verificationLink = "http://localhost:4200/auth/" + userToSave.getId() + "/verify-account/" + verificationCode;
+        sendVerificationCodeViaEmail(userToSave.getEmail(), verificationLink);
 
         Authentication authentication = authenticateUser(userRequest.getEmail(), password);
         String jwt = jwtService.generateToken(authentication, userToSave);
@@ -98,6 +100,7 @@ public class AuthServiceImpl implements AuthService {
                         .username(userToSave.getFullName())
                         .email(userToSave.getUsername())
                         .role(userToSave.getRole().toString())
+                        .verified(userToSave.isVerified())
                         .token(jwt)
                         .build()
         );
@@ -114,13 +117,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Optional<UserResponse> verifyAccount(VerificationCodeRequest request) {
-        Optional<VerificationCode> code = verificationCodeService.verifyCode(request.getCode());
-        assert code.isPresent();
-        User user = userRepository.findById(code.get().getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("No Recruiter found with id: " + code.get().getUser().getId()));
+    public Optional<UserResponse> verifyAccount(String id, String code) {
+        User user = userRepository.findById(Utils.pareseStringToUUID(id))
+                .orElseThrow(() -> new ResourceNotFoundException("No Recruiter found with id: " + id));
+
+        Optional<VerificationCode> verificationCode = verificationCodeService.verifyCode(user, code);
+        assert verificationCode.isPresent();
+
         user.setVerified(true);
         userRepository.save(user);
+
         return Optional.of(mapper.map(user, UserResponse.class));
     }
 
@@ -140,7 +146,7 @@ public class AuthServiceImpl implements AuthService {
         return verificationCode.getCode();
     }
 
-    public void sendVerificationCodeViaEmail(String email, String code) {
-        emailService.send(email, "MyRH account Verification Code", "Here is Your Verification code: `" + code + "` it will last only for 3 minutes.");
+    public void sendVerificationCodeViaEmail(String email, String link) {
+        emailService.send(email, "MyRH account Verification Code", "Here is Your Verification link: `" + link + "` it will last only for 3 minutes.");
     }
 }
