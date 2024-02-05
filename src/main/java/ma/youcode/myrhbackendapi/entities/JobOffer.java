@@ -1,14 +1,13 @@
 package ma.youcode.myrhbackendapi.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ma.youcode.myrhbackendapi.enums.OfferStatus;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "joboffers")
+@Table(name = "job_offers")
 public class JobOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,4 +40,8 @@ public class JobOffer {
 
     @OneToMany(mappedBy = "jobOffer", fetch = FetchType.LAZY)
     private List<Application> applications;
+
+    @CreatedDate
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

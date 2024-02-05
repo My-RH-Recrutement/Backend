@@ -2,7 +2,7 @@ package ma.youcode.myrhbackendapi.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.dto.responses.VerificationCodeResponse;
-import ma.youcode.myrhbackendapi.entities.Recruiter;
+import ma.youcode.myrhbackendapi.entities.User;
 import ma.youcode.myrhbackendapi.entities.VerificationCode;
 import ma.youcode.myrhbackendapi.exceptions.InvalidVerificationCodeException;
 import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
@@ -12,6 +12,7 @@ import ma.youcode.myrhbackendapi.services.VerificationCodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,27 +26,32 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
 
     @Override
     public Optional<VerificationCodeResponse> generateCode(String email) {
-        String sub = email.substring(0, 4) + UUID.randomUUID();
+        String sub = email.substring(0, 4) + UUID.randomUUID().toString().replace("-", "");
         VerificationCodeResponse response = VerificationCodeResponse.builder()
-                .code(sub.substring(0, 20))
+                .code(sub.substring(0, 10))
                 .expiration(LocalDateTime.now().plusMinutes(3))
                 .build();
         return Optional.of(response);
     }
 
     @Override
-    public Optional<VerificationCode> verifyCode(String code) {
-        VerificationCode verificationCode = verificationCodeRepository.findVerificationCodeByCode(code)
+    public Optional<VerificationCode> verifyCode(User user, String code) {
+        VerificationCode verificationCode = verificationCodeRepository.findVerificationCodeByUserAndCode(user, code)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid Validation Code"));
+
+        if (verificationCode.isUsed()) throw new InvalidVerificationCodeException("Verification Code is Already Used");
         if (LocalDateTime.now().isBefore(verificationCode.getExpiration().minusMinutes(3))) throw new InvalidVerificationCodeException("Verification Code is Invalid");
         if (LocalDateTime.now().isAfter(verificationCode.getExpiration())) throw new TokenExpirationException("Verification Code is Expired");
+
+        verificationCode.setUsed(true);
+        verificationCodeRepository.save(verificationCode);
         return Optional.of(verificationCode);
     }
 
     @Override
-    public Optional<VerificationCodeResponse> save(Recruiter recruiter, VerificationCodeResponse code) {
+    public Optional<VerificationCodeResponse> save(User user, VerificationCodeResponse code) {
         VerificationCode verificationCode = mapper.map(code, VerificationCode.class);
-        verificationCode.setRecruiter(recruiter);
+        verificationCode.setUser(user);
         VerificationCode savedVerificationCode = verificationCodeRepository.save(verificationCode);
         return Optional.of(mapper.map(savedVerificationCode, VerificationCodeResponse.class));
     }

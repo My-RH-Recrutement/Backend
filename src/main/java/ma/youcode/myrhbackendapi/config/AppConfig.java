@@ -1,6 +1,7 @@
 package ma.youcode.myrhbackendapi.config;
 
 import com.cloudinary.Cloudinary;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import ma.youcode.myrhbackendapi.utils.Env;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +23,8 @@ public class AppConfig {
         return new Cloudinary(config);
     }
 
-//    @Bean
-//    public JavaMailSender javaMailSender() {
-//        return new JavaMailSenderImpl();
-//    }
+    @Bean
+    public Gson gson() {
+        return new Gson();
+    }
 }

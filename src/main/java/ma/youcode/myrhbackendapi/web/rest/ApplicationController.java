@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/api/v1/applications")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class ApplicationController implements ControllerInterface<ApplicationRequest, ApplicationResponse, UUID> {
 
     private final ApplicationService applicationService;

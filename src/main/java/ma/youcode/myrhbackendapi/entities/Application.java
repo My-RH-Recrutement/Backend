@@ -1,24 +1,23 @@
 package ma.youcode.myrhbackendapi.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ma.youcode.myrhbackendapi.entities.embeddable.SeekerOfferId;
+import org.springframework.data.annotation.CreatedDate;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "applications")
 public class Application {
     @EmbeddedId
     private SeekerOfferId id;
 
-    @Column(name = "motivationletter")
+    @Column(name = "motivation_letter")
     private String motivationLetter;
 
     @ManyToOne
@@ -30,4 +29,15 @@ public class Application {
     @MapsId("jobOfferId")
     @JoinColumn(name = "offer_id")
     private JobOffer jobOffer;
+
+    @CreatedDate
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    public Application(SeekerOfferId id, String motivationLetter, JobSeeker jobSeeker, JobOffer jobOffer) {
+        this.id = id;
+        this.motivationLetter = motivationLetter;
+        this.jobSeeker = jobSeeker;
+        this.jobOffer = jobOffer;
+    }
 }

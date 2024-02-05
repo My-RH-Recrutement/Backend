@@ -6,11 +6,10 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "jobseekers")
+@Table(name = "job_seekers")
 public class JobSeeker extends User {
     @Column(name = "identity_num",nullable = false, unique = true)
     private String identity;

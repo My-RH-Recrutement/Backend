@@ -1,11 +1,9 @@
 package ma.youcode.myrhbackendapi.handlers;
 
-import ma.youcode.myrhbackendapi.exceptions.InvalidVerificationCodeException;
-import ma.youcode.myrhbackendapi.exceptions.ResourceAlreadyExistException;
-import ma.youcode.myrhbackendapi.exceptions.ResourceNotFoundException;
-import ma.youcode.myrhbackendapi.exceptions.TokenExpirationException;
+import ma.youcode.myrhbackendapi.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,7 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     /**
-     *
+     * Handles validation exception occurred by the request DTOs when posting data using a form
      * @param exception - {@link MethodArgumentNotValidException}
      * @return HashMap with all the validation errors
      */
@@ -78,5 +76,38 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidVerificationCodeException(InvalidVerificationCodeException exception) {
         ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.CONFLICT, exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Throw a customizable error response to the frontend if the credentials provided don't match the existing ones
+     * @param exception {@link BadCredentialsException}
+     * @return {@link ErrorResponse} custom error response contains all details about the exception
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception) {
+        ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.BAD_REQUEST, exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles SomethingWentWrongException exception when something unexpected happened
+     * @param exception {@link SomethingWentWrongException}
+     * @return {@link ErrorResponse} custom error response contains all details about the exception
+     */
+    @ExceptionHandler(SomethingWentWrongException.class)
+    public ResponseEntity<ErrorResponse> handleSomethingWentWrongException(SomethingWentWrongException exception) {
+        ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.CONFLICT, exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handles Stripe Exception when processing payments
+     * @param exception {@link CustomStripeException}
+     * @return {@link ErrorResponse} custom error response contains all details about the exception
+     */
+    @ExceptionHandler(CustomStripeException.class)
+    public ResponseEntity<ErrorResponse> handleCustomStripeException(CustomStripeException exception) {
+        ErrorResponse errorResponse = ErrorResponse.create(exception, HttpStatus.EXPECTATION_FAILED, exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

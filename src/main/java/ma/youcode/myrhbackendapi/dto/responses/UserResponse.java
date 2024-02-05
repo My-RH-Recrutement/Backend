@@ -1,12 +1,10 @@
 package ma.youcode.myrhbackendapi.dto.responses;
 
 
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
@@ -18,5 +16,8 @@ public class UserResponse {
     private UUID id;
     private String fullName;
     private String email;
+    private String password;
     private String phoneNumber;
+    private String role;
+    private boolean isVerified;
 }

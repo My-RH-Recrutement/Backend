@@ -2,20 +2,21 @@ package ma.youcode.myrhbackendapi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ma.youcode.myrhbackendapi.enums.SubscriptionStatus;
 
 import java.util.List;
 
 @Entity
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "recruiters")
 public class Recruiter extends User {
-    private String password;
     private String Address;
     private String image;
-    private boolean isVerified;
+
+    @OneToMany(mappedBy = "recruiter", fetch = FetchType.LAZY)
+    private List<Subscription> subscriptions;
 
     @OneToMany(mappedBy = "recruiter", fetch = FetchType.LAZY)
     private List<JobOffer> jobOffers;
